@@ -15,9 +15,9 @@ try {
     fs.mkdirSync('dist/public', { recursive: true });
   }
 
-  // Build the frontend using the existing vite config
+  // Build the frontend using the Vercel-specific vite config
   console.log('Building frontend...');
-  execSync('npx vite build', { 
+  execSync('npx vite build --config vite.vercel.config.ts', { 
     stdio: 'inherit',
     cwd: process.cwd()
   });
