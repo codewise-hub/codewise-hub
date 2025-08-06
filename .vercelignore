@@ -1,0 +1,10 @@
+node_modules
+.env
+.env.local
+.replit
+replit.nix
+*.log
+.git
+.vscode
+attached_assets
+README.md

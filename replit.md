@@ -1,0 +1,92 @@
+# CodewiseHub Learning Platform
+
+## Overview
+
+CodewiseHub is a comprehensive coding education platform designed for multiple user types including students (ages 6-17), teachers, and parents. The platform features age-appropriate learning paths with visual block-based programming for younger students (6-11) and text-based coding for teens (12-17). It includes interactive coding labs, progress tracking, project management, and specialized tools like a Micro:bit simulator for hands-on learning experiences.
+
+## User Preferences
+
+Preferred communication style: Simple, everyday language.
+
+## System Architecture
+
+### Frontend Architecture
+- **React 18** with TypeScript for type safety and modern development patterns
+- **Vite** as the build tool for fast development and optimized production builds
+- **Tailwind CSS** with shadcn/ui components for consistent, responsive design
+- **Component Architecture**: Modular React components with clear separation of concerns
+  - Page components for different dashboards (Student, Teacher, Parent)
+  - Shared UI components using Radix UI primitives
+  - Custom components for specialized features (CodingLab, MicrobitSimulator)
+
+### State Management
+- **React Context** for authentication state management
+- **TanStack Query** for server state management and caching
+- Local state management using React hooks for component-specific state
+
+### Authentication & User Management
+- **Firebase Authentication** for user sign-up, sign-in, and session management
+- **Firestore** for user profile storage and role-based data
+- Multi-role support with different user types (student, teacher, parent)
+- Age-group specific features and content delivery
+
+### Backend Architecture
+- **Express.js** server with TypeScript for API endpoints
+- **Modular route registration** system for scalable API organization
+- **Memory storage** implementation with interface for future database integration
+- **Middleware** for request logging, error handling, and JSON parsing
+
+### Database Design
+- **Drizzle ORM** with PostgreSQL schema definitions
+- **Neon Database** as the PostgreSQL provider
+- **Schema structure** includes:
+  - Users table with role-based fields
+  - Courses and user progress tracking
+  - Projects and achievements system
+  - Flexible design for multi-tenant usage
+
+### Development & Build System
+- **ESM modules** throughout the application for modern JavaScript
+- **TypeScript** configuration with path aliases for clean imports
+- **Vite development server** with HMR and error overlay
+- **Production build** process combining frontend Vite build and backend esbuild compilation
+
+### Specialized Features
+- **Blockly integration** for visual programming (younger students)
+- **Monaco Editor** for text-based coding (older students)
+- **Micro:bit simulator** with LED matrix and button interactions
+- **Chart.js** for progress visualization and analytics
+
+## External Dependencies
+
+### Core Framework Dependencies
+- **React ecosystem**: React 18, React DOM, TypeScript support
+- **Vite**: Build tool with plugins for React and development enhancements
+- **Express.js**: Backend server framework with TypeScript support
+
+### UI & Styling
+- **Tailwind CSS**: Utility-first CSS framework with PostCSS processing
+- **Radix UI**: Comprehensive component library for accessible UI primitives
+- **Lucide React**: Icon library for consistent iconography
+- **shadcn/ui**: Pre-built component system built on Radix UI
+
+### Database & ORM
+- **Drizzle ORM**: TypeScript ORM for database schema and queries
+- **Neon Database**: Serverless PostgreSQL database provider
+- **Drizzle-kit**: CLI tools for database migrations and schema management
+
+### Authentication & Backend Services
+- **Firebase**: Authentication, Firestore database, and file storage
+- **TanStack Query**: Server state management and data fetching
+- **React Hook Form**: Form handling with validation
+
+### Educational & Development Tools
+- **Blockly**: Google's visual programming editor for block-based coding
+- **Monaco Editor**: VS Code's editor for text-based programming
+- **Chart.js**: Data visualization for progress tracking and analytics
+
+### Development & Build Tools
+- **TypeScript**: Static typing for both frontend and backend
+- **ESBuild**: Fast JavaScript bundler for production builds
+- **PostCSS**: CSS processing with Autoprefixer for browser compatibility
+- **Replit plugins**: Development environment integration and error handling
