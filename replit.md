@@ -4,6 +4,18 @@
 
 CodewiseHub is a comprehensive coding education platform designed for multiple user types including students (ages 6-17), teachers, and parents. The platform features age-appropriate learning paths with visual block-based programming for younger students (6-11) and text-based coding for teens (12-17). It includes interactive coding labs, progress tracking, project management, and specialized tools like a Micro:bit simulator for hands-on learning experiences.
 
+## Recent Updates (August 2025)
+
+✅ **Course Material System Complete** - Created comprehensive course database with 4 courses, 15 lessons, and 4 robotics activities
+✅ **Database Integration** - Set up PostgreSQL with Drizzle ORM for persistent course storage
+✅ **Import Tool** - Built automated course material import system with JSON-based content management
+✅ **Admin Panel** - Added course management interface with filtering by age groups
+✅ **API Endpoints** - Implemented REST API for courses, lessons, and robotics activities
+✅ **Vercel Deployment** - Successfully deployed application to production
+✅ **Production Import System** - Created multiple import methods including Node.js script and API endpoints
+✅ **Windows Compatibility** - Fixed tsx dependency issues with vanilla Node.js import script
+✅ **Neon Database Integration** - Created comprehensive setup guide and testing tools for Neon-Vercel integration
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
