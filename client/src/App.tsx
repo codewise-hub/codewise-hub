@@ -13,9 +13,11 @@ import { HomePage } from "@/pages/HomePage";
 import { StudentDashboard } from "@/pages/StudentDashboard";
 import { TeacherDashboard } from "@/pages/TeacherDashboard";
 import { ParentDashboard } from "@/pages/ParentDashboard";
+import { AdminPage } from "@/pages/AdminPage";
 
 function AppContent() {
   const { user, loading } = useAuth();
+  const [currentView, setCurrentView] = useState<'dashboard' | 'admin'>('dashboard');
   const [authModal, setAuthModal] = useState<{
     isOpen: boolean;
     mode: 'signin' | 'signup';
@@ -63,7 +65,12 @@ function AppContent() {
     );
   }
 
-  const renderDashboard = () => {
+  const renderContent = () => {
+    // Admin panel access (available to all users for demonstration)
+    if (currentView === 'admin') {
+      return <AdminPage />;
+    }
+    
     // Hide home content when users are logged in - show only dashboards
     if (!user) {
       return <HomePage onAuthModalOpen={openAuthModal} />;
@@ -93,9 +100,11 @@ function AppContent() {
       <Navigation 
         onAuthModalOpen={openAuthModal}
         onCodingLabOpen={() => setCodingLabOpen(true)}
+        currentView={currentView}
+        onViewChange={setCurrentView}
       />
       
-      {renderDashboard()}
+      {renderContent()}
 
       <AuthModal
         isOpen={authModal.isOpen}

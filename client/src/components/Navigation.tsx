@@ -3,9 +3,11 @@ import { useAuth } from "@/hooks/useAuth";
 interface NavigationProps {
   onAuthModalOpen: (mode: 'signin' | 'signup', role?: string, ageGroup?: string) => void;
   onCodingLabOpen: () => void;
+  currentView?: 'dashboard' | 'admin';
+  onViewChange?: (view: 'dashboard' | 'admin') => void;
 }
 
-export function Navigation({ onAuthModalOpen, onCodingLabOpen }: NavigationProps) {
+export function Navigation({ onAuthModalOpen, onCodingLabOpen, currentView = 'dashboard', onViewChange }: NavigationProps) {
   const { user, signOut } = useAuth();
 
   const handleSignOut = async () => {
@@ -45,7 +47,18 @@ export function Navigation({ onAuthModalOpen, onCodingLabOpen }: NavigationProps
             </div>
           ) : (
             <div className="flex items-center space-x-4">
-              {user.role === 'student' && (
+              <button 
+                onClick={() => onViewChange?.(currentView === 'admin' ? 'dashboard' : 'admin')}
+                className={`px-4 py-2 rounded-md transition ${
+                  currentView === 'admin' 
+                    ? 'bg-orange-500 text-white hover:bg-orange-600' 
+                    : 'bg-gray-500 text-white hover:bg-gray-600'
+                }`}
+              >
+                <i className={`fa-solid ${currentView === 'admin' ? 'fa-home' : 'fa-cog'} mr-2`}></i>
+                {currentView === 'admin' ? 'Dashboard' : 'Admin'}
+              </button>
+              {user.role === 'student' && currentView === 'dashboard' && (
                 <button 
                   onClick={onCodingLabOpen}
                   className="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600 transition"
