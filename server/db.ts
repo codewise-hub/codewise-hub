@@ -5,7 +5,7 @@ if (!process.env.DATABASE_URL) {
   throw new Error('❌ DATABASE_URL is not set in environment variables');
 }
 
-// Create a global cached connection for Vercel serverless
+// Cache DB connection for Vercel serverless
 const globalForDb = globalThis as unknown as {
   pgClient?: Client;
   db?: ReturnType<typeof drizzle>;
@@ -17,7 +17,7 @@ let db: ReturnType<typeof drizzle>;
 if (!globalForDb.pgClient) {
   client = new Client({
     connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }, // Required for Neon
+    ssl: { rejectUnauthorized: false }, // ✅ Required for Neon
   });
 
   client.connect().catch((err) => {
