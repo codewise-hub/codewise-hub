@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { PackageSelector } from "./PackageSelector";
 
 
 interface AuthModalProps {
@@ -20,7 +21,8 @@ export function AuthModal({ isOpen, mode: initialMode, initialRole, initialAgeGr
     role: initialRole || '',
     ageGroup: initialAgeGroup || '6-11',
     childName: '',
-    schoolName: ''
+    schoolName: '',
+    packageId: ''
   });
   
   const { signIn, signUp } = useAuth();
@@ -42,7 +44,8 @@ export function AuthModal({ isOpen, mode: initialMode, initialRole, initialAgeGr
           formData.role,
           formData.role === 'student' ? formData.ageGroup : undefined,
           formData.role === 'parent' ? formData.childName : undefined,
-          formData.role === 'school_admin' ? formData.schoolName : undefined
+          formData.role === 'school_admin' ? formData.schoolName : undefined,
+          (formData.role === 'student' || formData.role === 'school_admin') ? formData.packageId : undefined
         );
         onSuccess('Successfully signed up!');
       }
@@ -61,7 +64,8 @@ export function AuthModal({ isOpen, mode: initialMode, initialRole, initialAgeGr
       role: initialRole || '',
       ageGroup: initialAgeGroup || '6-11',
       childName: '',
-      schoolName: ''
+      schoolName: '',
+      packageId: ''
     });
   };
 
@@ -142,6 +146,16 @@ export function AuthModal({ isOpen, mode: initialMode, initialRole, initialAgeGr
                 </div>
               )}
 
+              {(formData.role === 'student' || formData.role === 'school_admin') && (
+                <div className="mb-6">
+                  <PackageSelector
+                    selectedPackage={formData.packageId}
+                    onPackageSelect={(packageId) => setFormData({...formData, packageId})}
+                    userRole={formData.role}
+                  />
+                </div>
+              )}
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
                 <input 
@@ -182,14 +196,17 @@ export function AuthModal({ isOpen, mode: initialMode, initialRole, initialAgeGr
 
           <button 
             type="submit" 
+            disabled={mode === 'signup' && (formData.role === 'student' || formData.role === 'school_admin') && !formData.packageId}
             className={`w-full py-3 rounded-lg font-semibold transition ${
               mode === 'signin' 
                 ? 'bg-blue-500 text-white hover:bg-blue-600' 
-                : 'bg-green-500 text-white hover:bg-green-600'
+                : (mode === 'signup' && (formData.role === 'student' || formData.role === 'school_admin') && !formData.packageId)
+                  ? 'bg-gray-400 text-white cursor-not-allowed'
+                  : 'bg-green-500 text-white hover:bg-green-600'
             }`}
             data-testid={mode === 'signin' ? 'button-signin' : 'button-signup'}
           >
-            {mode === 'signin' ? 'Sign In' : 'Sign Up Free'}
+            {mode === 'signin' ? 'Sign In' : 'Sign Up'}
           </button>
 
 

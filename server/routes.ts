@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import cookieParser from 'cookie-parser';
 import authRoutes from './authRoutes';
+import packageRoutes from './packageRoutes';
 import { storage } from "./storage";
 import { 
   insertUserSchema, 
@@ -18,6 +19,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Auth routes
   app.use('/api/auth', authRoutes);
+  
+  // Package routes
+  app.use('/api', packageRoutes);
   // User routes
   app.get("/api/users/:id", async (req, res) => {
     try {

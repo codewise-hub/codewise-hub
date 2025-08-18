@@ -6,7 +6,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, name: string, role: string, ageGroup?: string, childName?: string, schoolName?: string) => Promise<void>;
+  signUp: (email: string, password: string, name: string, role: string, ageGroup?: string, childName?: string, schoolName?: string, packageId?: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -50,7 +50,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     role: string, 
     ageGroup?: string, 
     childName?: string,
-    schoolName?: string
+    schoolName?: string,
+    packageId?: string
   ) => {
     try {
       const result = await authApi.signUp({
@@ -60,7 +61,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         role,
         ageGroup,
         childName,
-        schoolName
+        schoolName,
+        packageId
       });
       setUser(result.user);
     } catch (error) {

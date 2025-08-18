@@ -22,6 +22,7 @@ const signUpSchema = z.object({
   ageGroup: z.enum(['6-11', '12-17']).optional(),
   childName: z.string().optional(),
   schoolName: z.string().optional(),
+  packageId: z.string().optional(),
 });
 
 // Sign in schema
