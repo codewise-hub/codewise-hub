@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import cookieParser from 'cookie-parser';
-import authRoutes from './authRoutes';
+import authRoutes from './authRoutes.js';
 import { storage } from "./storage";
 import { 
   insertUserSchema, 
