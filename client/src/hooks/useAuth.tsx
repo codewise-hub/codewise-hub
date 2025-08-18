@@ -8,7 +8,8 @@ interface AuthContextType {
   user: AuthUser | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, name: string, role: UserRole, ageGroup?: AgeGroup, childName?: string) => Promise<void>;
+  signUp: (email: string, password: string, name: string, role: UserRole, ageGroup?: AgeGroup, childName?: string, schoolName?: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -45,16 +46,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    // For demo purposes, simulate sign in
-    const mockUser: AuthUser = {
-      id: "demo-user-id",
-      email,
-      name: "Demo User",
-      role: "student",
-      ageGroup: "6-11",
-      firebaseUid: "demo-firebase-uid",
-    };
-    setUser(mockUser);
+    try {
+      // For demo purposes, simulate sign in
+      const mockUser: AuthUser = {
+        id: "demo-user-id",
+        email,
+        name: "Demo User", 
+        role: "student",
+        ageGroup: "6-11",
+        firebaseUid: "demo-firebase-uid",
+      };
+      setUser(mockUser);
+    } catch (error) {
+      console.error("Error signing in:", error);
+      throw error;
+    }
+  };
+
+  const signInWithGoogle = async () => {
+    try {
+      // For demo, create a mock Google user
+      const mockUser: AuthUser = {
+        id: "google-demo-user-id",
+        email: "demo@gmail.com",
+        name: "Google Demo User",
+        role: "student", 
+        ageGroup: "6-11",
+        firebaseUid: "google-demo-firebase-uid",
+      };
+      setUser(mockUser);
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
+      throw error;
+    }
   };
 
   const signUp = async (
@@ -85,7 +109,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signIn, signUp, signInWithGoogle, signOut }}>
       {children}
     </AuthContext.Provider>
   );

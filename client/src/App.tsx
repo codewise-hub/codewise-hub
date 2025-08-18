@@ -18,7 +18,7 @@ import { SchoolAdminDashboard } from "@/components/SchoolAdminDashboard";
 
 function AppContent() {
   const { user, loading } = useAuth();
-  const [currentView, setCurrentView] = useState<'dashboard' | 'admin'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard'>('dashboard');
   const [authModal, setAuthModal] = useState<{
     isOpen: boolean;
     mode: 'signin' | 'signup';
@@ -67,11 +67,6 @@ function AppContent() {
   }
 
   const renderContent = () => {
-    // Admin panel access (available to all users for demonstration)
-    if (currentView === 'admin') {
-      return <AdminPage />;
-    }
-    
     // Hide home content when users are logged in - show only dashboards
     if (!user) {
       return <HomePage onAuthModalOpen={openAuthModal} />;
@@ -103,8 +98,7 @@ function AppContent() {
       <Navigation 
         onAuthModalOpen={openAuthModal}
         onCodingLabOpen={() => setCodingLabOpen(true)}
-        currentView={currentView}
-        onViewChange={setCurrentView}
+
       />
       
       {renderContent()}
