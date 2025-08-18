@@ -88,7 +88,7 @@ export function PackageSelector({ packageType, selectedPackageId, onPackageSelec
                 <h4 className="font-semibold text-lg">{pkg.name}</h4>
                 <div className="text-right">
                   <div className="text-2xl font-bold text-blue-600">
-                    ${pkg.price}
+                    {pkg.currency === 'ZAR' ? 'R' : '$'}{pkg.price}
                   </div>
                   <div className="text-sm text-gray-500">
                     per {pkg.duration}
