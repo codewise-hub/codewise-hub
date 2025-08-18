@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { PackageSelector } from "./PackageSelector";
+import { PackageSelector } from "./PackageSelector.tsx";
 
 
 interface AuthModalProps {
