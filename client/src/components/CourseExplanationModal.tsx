@@ -58,9 +58,9 @@ export function CourseExplanationModal({ isOpen, onClose, ageGroup, onGetStarted
         description: "Discover how to program the micro:bit device"
       },
       {
-        title: "Creating Your First Animation",
-        url: "https://www.youtube.com/embed/OAx_6-wdslM", // Different Scratch animation tutorial
-        description: "Step-by-step guide to making characters move and dance"
+        title: "Fun Robotics & Animation for Kids",
+        url: "https://www.youtube.com/embed/Q2dwOxkjk2s", // Kid-friendly robotics and animation
+        description: "Discover how to make fun animations and control robots with simple blocks"
       }
     ]
   } : {
@@ -108,9 +108,9 @@ export function CourseExplanationModal({ isOpen, onClose, ageGroup, onGetStarted
         description: "How to use the coding environment and write Python code"
       },
       {
-        title: "Prompt Engineering Fundamentals",
-        url: "https://www.youtube.com/embed/jC4v5AS4RIM", // Prompt engineering tutorial
-        description: "Learn to write effective prompts for AI tools like ChatGPT and Claude"
+        title: "AI Prompt Engineering in 2 Minutes",
+        url: "https://www.youtube.com/embed/_VjQlb8GvhY", // Short prompt engineering tutorial
+        description: "Quick guide to writing effective prompts for AI tools like ChatGPT and Claude"
       },
       {
         title: "Building Your First Web Project",
