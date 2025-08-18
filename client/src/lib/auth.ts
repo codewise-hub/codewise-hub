@@ -8,15 +8,26 @@ export interface AuthResponse {
 const API_BASE = '/api/auth';
 
 // Sign up user
-export async function signUp(data: {
-  email: string;
-  password: string;
-  name: string;
-  role: string;
-  ageGroup?: string;
-  childName?: string;
-  schoolName?: string;
-}): Promise<AuthResponse> {
+export async function signUp(
+  email: string,
+  password: string,
+  name: string,
+  role: string,
+  ageGroup?: string,
+  childName?: string,
+  schoolName?: string,
+  packageId?: string
+): Promise<AuthResponse> {
+  const data = {
+    email,
+    password,
+    name,
+    role,
+    ageGroup,
+    childName,
+    schoolName,
+    packageId
+  };
   const response = await fetch(`${API_BASE}/signup`, {
     method: 'POST',
     headers: {

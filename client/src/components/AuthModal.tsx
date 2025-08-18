@@ -52,6 +52,7 @@ export function AuthModal({ isOpen, mode: initialMode, initialRole, initialAgeGr
       onClose();
     } catch (error) {
       console.error('Auth error:', error);
+      alert(`Authentication failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 

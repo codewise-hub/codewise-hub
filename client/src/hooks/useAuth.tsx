@@ -54,7 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     packageId?: string
   ) => {
     try {
-      const result = await authApi.signUp({
+      const result = await authApi.signUp(
         email,
         password,
         name,
@@ -63,7 +63,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         childName,
         schoolName,
         packageId
-      });
+      );
       setUser(result.user);
     } catch (error) {
       console.error("Error signing up:", error);
