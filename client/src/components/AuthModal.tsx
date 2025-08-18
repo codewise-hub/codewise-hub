@@ -19,7 +19,8 @@ export function AuthModal({ isOpen, mode: initialMode, initialRole, initialAgeGr
     name: '',
     role: initialRole || '',
     ageGroup: initialAgeGroup || '6-11',
-    childName: ''
+    childName: '',
+    schoolName: ''
   });
   
   const { signIn, signUp } = useAuth();
@@ -40,7 +41,8 @@ export function AuthModal({ isOpen, mode: initialMode, initialRole, initialAgeGr
           formData.name, 
           formData.role as UserRole,
           formData.role === 'student' ? formData.ageGroup as AgeGroup : undefined,
-          formData.role === 'parent' ? formData.childName : undefined
+          formData.role === 'parent' ? formData.childName : undefined,
+          formData.role === 'school_admin' ? formData.schoolName : undefined
         );
         onSuccess('Successfully signed up!');
       }
@@ -58,7 +60,8 @@ export function AuthModal({ isOpen, mode: initialMode, initialRole, initialAgeGr
       name: '',
       role: initialRole || '',
       ageGroup: initialAgeGroup || '6-11',
-      childName: ''
+      childName: '',
+      schoolName: ''
     });
   };
 
@@ -70,6 +73,7 @@ export function AuthModal({ isOpen, mode: initialMode, initialRole, initialAgeGr
           <button 
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
+            data-testid="button-close-auth"
           >
             <i className="fa-solid fa-times text-xl"></i>
           </button>
@@ -85,11 +89,13 @@ export function AuthModal({ isOpen, mode: initialMode, initialRole, initialAgeGr
                   value={formData.role}
                   onChange={(e) => setFormData({...formData, role: e.target.value})}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  data-testid="select-role"
                 >
                   <option value="">Select your role</option>
                   <option value="student">Student</option>
                   <option value="teacher">Teacher</option>
                   <option value="parent">Parent</option>
+                  <option value="school_admin">School Administrator</option>
                 </select>
               </div>
 
@@ -100,6 +106,7 @@ export function AuthModal({ isOpen, mode: initialMode, initialRole, initialAgeGr
                     value={formData.ageGroup}
                     onChange={(e) => setFormData({...formData, ageGroup: e.target.value})}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    data-testid="select-age-group"
                   >
                     <option value="6-11">Little Coders (6-11 years)</option>
                     <option value="12-17">Teen Coders (12-17 years)</option>
@@ -116,6 +123,21 @@ export function AuthModal({ isOpen, mode: initialMode, initialRole, initialAgeGr
                     onChange={(e) => setFormData({...formData, childName: e.target.value})}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
                     placeholder="Enter your child's name"
+                    data-testid="input-child-name"
+                  />
+                </div>
+              )}
+
+              {formData.role === 'school_admin' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">School Name</label>
+                  <input 
+                    type="text" 
+                    value={formData.schoolName}
+                    onChange={(e) => setFormData({...formData, schoolName: e.target.value})}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                    placeholder="Enter your school's name"
+                    data-testid="input-school-name"
                   />
                 </div>
               )}
@@ -128,6 +150,7 @@ export function AuthModal({ isOpen, mode: initialMode, initialRole, initialAgeGr
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  data-testid="input-name"
                 />
               </div>
             </>
@@ -141,6 +164,7 @@ export function AuthModal({ isOpen, mode: initialMode, initialRole, initialAgeGr
               value={formData.email}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              data-testid="input-email"
             />
           </div>
 
@@ -152,6 +176,7 @@ export function AuthModal({ isOpen, mode: initialMode, initialRole, initialAgeGr
               value={formData.password}
               onChange={(e) => setFormData({...formData, password: e.target.value})}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              data-testid="input-password"
             />
           </div>
 
@@ -162,6 +187,7 @@ export function AuthModal({ isOpen, mode: initialMode, initialRole, initialAgeGr
                 ? 'bg-blue-500 text-white hover:bg-blue-600' 
                 : 'bg-green-500 text-white hover:bg-green-600'
             }`}
+            data-testid={mode === 'signin' ? 'button-signin' : 'button-signup'}
           >
             {mode === 'signin' ? 'Sign In' : 'Sign Up Free'}
           </button>
@@ -171,11 +197,9 @@ export function AuthModal({ isOpen, mode: initialMode, initialRole, initialAgeGr
               type="button" 
               onClick={() => switchMode(mode === 'signin' ? 'signup' : 'signin')}
               className="text-blue-500 hover:text-blue-600"
+              data-testid="button-switch-mode"
             >
-              {mode === 'signin' 
-                ? "Don't have an account? Sign up" 
-                : "Already have an account? Sign in"
-              }
+              {mode === 'signin' ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
             </button>
           </div>
         </form>

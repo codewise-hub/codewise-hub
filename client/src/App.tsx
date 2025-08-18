@@ -14,6 +14,7 @@ import { StudentDashboard } from "@/pages/StudentDashboard";
 import { TeacherDashboard } from "@/pages/TeacherDashboard";
 import { ParentDashboard } from "@/pages/ParentDashboard";
 import { AdminPage } from "@/pages/AdminPage";
+import { SchoolAdminDashboard } from "@/components/SchoolAdminDashboard";
 
 function AppContent() {
   const { user, loading } = useAuth();
@@ -84,6 +85,8 @@ function AppContent() {
         return <TeacherDashboard />;
       case 'parent':
         return <ParentDashboard />;
+      case 'school_admin':
+        return <SchoolAdminDashboard user={user} />;
       default:
         return <HomePage onAuthModalOpen={openAuthModal} />;
     }

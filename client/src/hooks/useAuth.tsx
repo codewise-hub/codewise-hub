@@ -63,7 +63,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     name: string, 
     role: UserRole, 
     ageGroup?: AgeGroup, 
-    childName?: string
+    childName?: string,
+    schoolName?: string
   ) => {
     // For demo purposes, simulate sign up
     const mockUser: AuthUser = {
@@ -73,6 +74,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       role,
       ageGroup,
       childName,
+      schoolName,
       firebaseUid: "demo-firebase-uid",
     };
     setUser(mockUser);
