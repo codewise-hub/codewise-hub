@@ -59,16 +59,17 @@ export function CourseExplanationModal({ isOpen, onClose, ageGroup, onGetStarted
       },
       {
         title: "Creating Your First Animation",
-        url: "https://www.youtube.com/embed/jXUZaf5D12A", // Animation tutorial
-        description: "Step-by-step guide to making characters move"
+        url: "https://www.youtube.com/embed/OAx_6-wdslM", // Different Scratch animation tutorial
+        description: "Step-by-step guide to making characters move and dance"
       }
     ]
   } : {
     title: "Teen Coders Program", 
     subtitle: "Ages 12-17 • Real Programming Languages",
-    description: "Advance your coding skills with professional programming languages like Python and web development. Build real applications and prepare for a tech career!",
+    description: "Advance your coding skills with professional programming languages like Python, web development, and AI prompt engineering. Build real applications and prepare for a tech career in the AI era!",
     benefits: [
       "Learn industry-standard programming languages",
+      "Master AI tools and prompt engineering for future careers",
       "Build portfolio projects for college applications",
       "Develop problem-solving skills for STEM subjects",
       "Prepare for computer science courses and careers", 
@@ -88,6 +89,12 @@ export function CourseExplanationModal({ isOpen, onClose, ageGroup, onGetStarted
         difficulty: "Project-Based"
       },
       {
+        name: "Prompt Engineering & AI",
+        description: "Learn to work with AI tools like ChatGPT, Claude, and build AI-powered applications",
+        icon: "🤖",
+        difficulty: "Modern Skills"
+      },
+      {
         name: "Data Science Basics",
         description: "Analyze data and create visualizations using Python libraries",
         icon: "📊",
@@ -101,9 +108,9 @@ export function CourseExplanationModal({ isOpen, onClose, ageGroup, onGetStarted
         description: "How to use the coding environment and write Python code"
       },
       {
-        title: "Web Development Tools Overview", 
-        url: "https://www.youtube.com/embed/UB1O30fR-EE", // Web dev tutorial
-        description: "Introduction to HTML, CSS, and JavaScript in the lab"
+        title: "Prompt Engineering Fundamentals",
+        url: "https://www.youtube.com/embed/jC4v5AS4RIM", // Prompt engineering tutorial
+        description: "Learn to write effective prompts for AI tools like ChatGPT and Claude"
       },
       {
         title: "Building Your First Web Project",
@@ -141,7 +148,7 @@ export function CourseExplanationModal({ isOpen, onClose, ageGroup, onGetStarted
           <div>
             <h3 className="text-xl font-semibold mb-4 flex items-center">
               <Play className="h-5 w-5 mr-2 text-blue-600" />
-              Video Tutorials - How to Use the Visual Lab
+{ageGroup === '6-11' ? 'Video Tutorials - How to Use the Visual Lab' : 'Video Tutorials - Coding Environment & Tools'}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {courseInfo.videoTutorials.map((video, index) => (
@@ -187,7 +194,7 @@ export function CourseExplanationModal({ isOpen, onClose, ageGroup, onGetStarted
               <Book className="h-5 w-5 mr-2 text-green-600" />
               Available Courses
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {courseInfo.courses.map((course, index) => (
                 <Card key={index} className="hover:shadow-lg transition-shadow">
                   <CardHeader className="text-center">
