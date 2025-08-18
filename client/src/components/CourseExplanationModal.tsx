@@ -58,9 +58,9 @@ export function CourseExplanationModal({ isOpen, onClose, ageGroup, onGetStarted
         description: "Discover how to program the micro:bit device"
       },
       {
-        title: "Scratch Animation Tutorial for Kids",
-        url: "https://www.youtube.com/embed/kUDSrooBGqU", // Scratch tutorial for kids
-        description: "Learn to create fun animations with moving characters and colorful backgrounds"
+        title: "micro:bit Coding Lab Tutorial",
+        url: "https://www.youtube.com/embed/Wuza5WXiMkc", // micro:bit programming tutorial
+        description: "See how to connect your micro:bit device and program it step-by-step from the coding lab"
       }
     ]
   } : {
