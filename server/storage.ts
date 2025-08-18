@@ -7,9 +7,9 @@ import {
   type InsertLesson,
   type RoboticsActivity,
   type InsertRoboticsActivity
-} from "@shared/schema";
+} from "../shared/schema";
 import { db } from "./db";
-import { users, courses, lessons, roboticsActivities } from "@shared/schema";
+import { users, courses, lessons, roboticsActivities } from "../shared/schema";
 import { eq } from "drizzle-orm";
 
 // modify the interface with any CRUD methods

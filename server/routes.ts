@@ -1,14 +1,14 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import cookieParser from 'cookie-parser';
-import authRoutes from './authRoutes.js';
+import authRoutes from './authRoutes';
 import { storage } from "./storage";
 import { 
   insertUserSchema, 
   insertCourseSchema, 
   insertLessonSchema, 
   insertRoboticsActivitySchema 
-} from "@shared/schema";
+} from "../shared/schema";
 import { registerImportRoutes } from "./routes-import";
 import { registerEnhancedRoutes } from "./enhanced-routes";
 
