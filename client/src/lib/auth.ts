@@ -38,8 +38,16 @@ export async function signUp(
   });
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Sign up failed');
+    let errorMessage = 'Sign up failed';
+    try {
+      const error = await response.json();
+      errorMessage = error.error || error.message || 'Sign up failed';
+    } catch (parseError) {
+      // If response is not JSON, use the response text
+      const errorText = await response.text();
+      errorMessage = errorText || `Server error (${response.status})`;
+    }
+    throw new Error(errorMessage);
   }
 
   return response.json();
@@ -57,8 +65,16 @@ export async function signIn(email: string, password: string): Promise<AuthRespo
   });
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Sign in failed');
+    let errorMessage = 'Sign in failed';
+    try {
+      const error = await response.json();
+      errorMessage = error.error || error.message || 'Sign in failed';
+    } catch (parseError) {
+      // If response is not JSON, use the response text
+      const errorText = await response.text();
+      errorMessage = errorText || `Server error (${response.status})`;
+    }
+    throw new Error(errorMessage);
   }
 
   return response.json();
