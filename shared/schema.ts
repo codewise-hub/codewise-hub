@@ -1,16 +1,88 @@
-import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, boolean, integer } from "drizzle-orm/pg-core";
+import { sql, relations } from "drizzle-orm";
+import { pgTable, text, varchar, timestamp, boolean, integer, decimal } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+// Subscription packages
+export const packages = pgTable("packages", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  description: text("description"),
+  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  currency: text("currency").default("USD"),
+  duration: text("duration").notNull(), // 'monthly', 'yearly'
+  features: text("features"), // JSON array of features
+  maxStudents: integer("max_students"), // for school packages
+  packageType: text("package_type").notNull(), // 'individual', 'school'
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Schools table
+export const schools = pgTable("schools", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  address: text("address"),
+  phone: text("phone"),
+  email: text("email"),
+  adminUserId: varchar("admin_user_id"), // references users.id
+  packageId: varchar("package_id").references(() => packages.id),
+  subscriptionStatus: text("subscription_status").default("active"), // 'active', 'suspended', 'cancelled'
+  subscriptionStart: timestamp("subscription_start"),
+  subscriptionEnd: timestamp("subscription_end"),
+  maxStudents: integer("max_students").default(100),
+  currentStudents: integer("current_students").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Enhanced users table
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   email: text("email").notNull().unique(),
+  passwordHash: text("password_hash"),
   name: text("name").notNull(),
-  role: text("role").notNull(), // 'student', 'teacher', 'parent'
+  role: text("role").notNull(), // 'student', 'teacher', 'parent', 'school_admin'
   ageGroup: text("age_group"), // '6-11', '12-17' for students
-  childName: text("child_name"), // for parents
-  firebaseUid: text("firebase_uid").unique(),
+  
+  // Package and subscription info
+  packageId: varchar("package_id").references(() => packages.id),
+  subscriptionStatus: text("subscription_status").default("pending"), // 'pending', 'active', 'expired', 'cancelled'
+  subscriptionStart: timestamp("subscription_start"),
+  subscriptionEnd: timestamp("subscription_end"),
+  
+  // School association
+  schoolId: varchar("school_id").references(() => schools.id),
+  
+  // Parent-child relationship
+  parentUserId: varchar("parent_user_id"), // references users.id for parent linking
+  
+  // Additional info
+  grade: text("grade"), // for students
+  subjects: text("subjects"), // JSON array for teachers
+  lastLoginAt: timestamp("last_login_at"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// User sessions table for authentication
+export const userSessions = pgTable("user_sessions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  sessionToken: text("session_token").notNull().unique(),
+  expiresAt: timestamp("expires_at").notNull(),
+  userAgent: text("user_agent"),
+  ipAddress: text("ip_address"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Parent-child relationships table (many-to-many)
+export const parentChildRelations = pgTable("parent_child_relations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  parentUserId: varchar("parent_user_id").references(() => users.id).notNull(),
+  childUserId: varchar("child_user_id").references(() => users.id).notNull(),
+  relationshipType: text("relationship_type").default("parent"), // 'parent', 'guardian'
+  isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -89,10 +161,80 @@ export const achievements = pgTable("achievements", {
   earnedAt: timestamp("earned_at").defaultNow(),
 });
 
+// Define relations
+export const usersRelations = relations(users, ({ one, many }) => ({
+  package: one(packages, {
+    fields: [users.packageId],
+    references: [packages.id],
+  }),
+  school: one(schools, {
+    fields: [users.schoolId],
+    references: [schools.id],
+  }),
+  parentRelations: many(parentChildRelations, {
+    relationName: "parentRelations",
+  }),
+  childRelations: many(parentChildRelations, {
+    relationName: "childRelations",
+  }),
+  courses: many(courses),
+  progress: many(userProgress),
+  projects: many(projects),
+  achievements: many(achievements),
+}));
+
+export const schoolsRelations = relations(schools, ({ one, many }) => ({
+  package: one(packages, {
+    fields: [schools.packageId],
+    references: [packages.id],
+  }),
+  users: many(users),
+}));
+
+export const packagesRelations = relations(packages, ({ many }) => ({
+  users: many(users),
+  schools: many(schools),
+}));
+
+export const parentChildRelationsRelations = relations(parentChildRelations, ({ one }) => ({
+  parent: one(users, {
+    fields: [parentChildRelations.parentUserId],
+    references: [users.id],
+    relationName: "parentRelations",
+  }),
+  child: one(users, {
+    fields: [parentChildRelations.childUserId],
+    references: [users.id],
+    relationName: "childRelations",
+  }),
+}));
+
+// Insert schemas
+export const insertPackageSchema = createInsertSchema(packages).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertSchoolSchema = createInsertSchema(schools).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
-  firebaseUid: true,
+  updatedAt: true,
+  lastLoginAt: true,
+});
+
+export const insertUserSessionSchema = createInsertSchema(userSessions).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertParentChildRelationSchema = createInsertSchema(parentChildRelations).omit({
+  id: true,
+  createdAt: true,
 });
 
 export const insertCourseSchema = createInsertSchema(courses).omit({
@@ -125,7 +267,12 @@ export const insertAchievementSchema = createInsertSchema(achievements).omit({
   earnedAt: true,
 });
 
+// Types
+export type Package = typeof packages.$inferSelect;
+export type School = typeof schools.$inferSelect;
 export type User = typeof users.$inferSelect;
+export type UserSession = typeof userSessions.$inferSelect;
+export type ParentChildRelation = typeof parentChildRelations.$inferSelect;
 export type Course = typeof courses.$inferSelect;
 export type Lesson = typeof lessons.$inferSelect;
 export type RoboticsActivity = typeof roboticsActivities.$inferSelect;
@@ -133,7 +280,11 @@ export type UserProgress = typeof userProgress.$inferSelect;
 export type Project = typeof projects.$inferSelect;
 export type Achievement = typeof achievements.$inferSelect;
 
+export type InsertPackage = z.infer<typeof insertPackageSchema>;
+export type InsertSchool = z.infer<typeof insertSchoolSchema>;
 export type InsertUser = z.infer<typeof insertUserSchema>;
+export type InsertUserSession = z.infer<typeof insertUserSessionSchema>;
+export type InsertParentChildRelation = z.infer<typeof insertParentChildRelationSchema>;
 export type InsertCourse = z.infer<typeof insertCourseSchema>;
 export type InsertLesson = z.infer<typeof insertLessonSchema>;
 export type InsertRoboticsActivity = z.infer<typeof insertRoboticsActivitySchema>;

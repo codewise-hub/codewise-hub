@@ -1,4 +1,4 @@
-export type UserRole = 'student' | 'teacher' | 'parent';
+export type UserRole = 'student' | 'teacher' | 'parent' | 'school_admin';
 export type AgeGroup = '6-11' | '12-17';
 
 export interface AuthUser {
@@ -8,7 +8,8 @@ export interface AuthUser {
   role: UserRole;
   ageGroup?: AgeGroup;
   childName?: string;
-  firebaseUid?: string;
+  schoolId?: string;
+  schoolName?: string;
 }
 
 export interface UserProgress {

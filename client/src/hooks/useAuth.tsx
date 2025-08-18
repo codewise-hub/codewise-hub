@@ -1,79 +1,44 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { onAuthStateChanged, signOut as firebaseSignOut, User as FirebaseUser } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { auth, db } from "@/lib/firebase";
-import { AuthUser, UserRole, AgeGroup } from "@/types/user";
+import { User } from "@/lib/auth";
+import * as authApi from "@/lib/auth";
 
 interface AuthContextType {
-  user: AuthUser | null;
+  user: User | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, name: string, role: UserRole, ageGroup?: AgeGroup, childName?: string, schoolName?: string) => Promise<void>;
-  signInWithGoogle: () => Promise<void>;
+  signUp: (email: string, password: string, name: string, role: string, ageGroup?: string, childName?: string, schoolName?: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        // Get user data from Firestore
-        const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          setUser({
-            id: firebaseUser.uid,
-            email: firebaseUser.email!,
-            name: userData.name,
-            role: userData.role,
-            ageGroup: userData.ageGroup,
-            childName: userData.childName,
-            firebaseUid: firebaseUser.uid,
-          });
-        }
-      } else {
+    // Check for existing session on mount
+    const checkSession = async () => {
+      try {
+        const currentUser = await authApi.getCurrentUser();
+        setUser(currentUser);
+      } catch (error) {
+        console.error('Session check error:', error);
         setUser(null);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    });
+    };
 
-    return unsubscribe;
+    checkSession();
   }, []);
 
   const signIn = async (email: string, password: string) => {
     try {
-      // Import Firebase sign-in
-      const { signInWithEmailAndPassword: firebaseSignIn } = await import('../lib/firebase');
-      await firebaseSignIn(auth, email, password);
-      // The auth state change will handle setting the user
+      const result = await authApi.signIn(email, password);
+      setUser(result.user);
     } catch (error) {
       console.error("Error signing in:", error);
-      throw error;
-    }
-  };
-
-  const signInWithGoogle = async () => {
-    try {
-      // Import Google sign-in from Firebase
-      const { signInWithGoogle: firebaseGoogleSignIn, createUserProfile } = await import('../lib/firebase');
-      const result = await firebaseGoogleSignIn();
-      
-      if (result.user) {
-        // Create or get user profile
-        await createUserProfile(result.user, {
-          role: 'student',
-          ageGroup: '6-11'
-        });
-        
-        // The auth state change will handle setting the user
-      }
-    } catch (error) {
-      console.error("Error signing in with Google:", error);
       throw error;
     }
   };
@@ -82,28 +47,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     email: string, 
     password: string, 
     name: string, 
-    role: UserRole, 
-    ageGroup?: AgeGroup, 
+    role: string, 
+    ageGroup?: string, 
     childName?: string,
     schoolName?: string
   ) => {
     try {
-      // Import Firebase sign-up
-      const { createUserWithEmailAndPassword: firebaseSignUp, createUserProfile } = await import('../lib/firebase');
-      const result = await firebaseSignUp(auth, email, password);
-      
-      if (result.user) {
-        // Create user profile in Firestore
-        await createUserProfile(result.user, {
-          name,
-          role,
-          ageGroup,
-          childName,
-          schoolName
-        });
-        
-        // The auth state change will handle setting the user
-      }
+      const result = await authApi.signUp({
+        email,
+        password,
+        name,
+        role,
+        ageGroup,
+        childName,
+        schoolName
+      });
+      setUser(result.user);
     } catch (error) {
       console.error("Error signing up:", error);
       throw error;
@@ -112,7 +71,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     try {
-      await firebaseSignOut(auth);
+      await authApi.signOut();
       setUser(null);
     } catch (error) {
       console.error("Error signing out:", error);
@@ -121,7 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signUp, signInWithGoogle, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   );

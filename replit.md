@@ -16,6 +16,18 @@ CodewiseHub is a comprehensive coding education platform designed for multiple u
 ✅ **Windows Compatibility** - Fixed tsx dependency issues with vanilla Node.js import script
 ✅ **Neon Database Integration** - Created comprehensive setup guide and testing tools for Neon-Vercel integration
 
+**Latest Changes (August 2025):**
+✅ **Admin Separation Complete** - Removed admin functionality from main student application
+✅ **Dedicated CMS Application** - Created standalone admin-cms.html for content management
+✅ **Student Learning Materials** - Added comprehensive StudentLearningMaterials component with courses, lessons, and study materials
+✅ **Enhanced Student Dashboard** - Integrated learning materials directly into student experience
+✅ **Multi-Role Authentication** - Complete signup flow for all user types including school administrators
+✅ **Course Explanation Modals** - Added detailed course information with YouTube video tutorials
+✅ **Prompt Engineering Education** - Added AI/prompt engineering course and video tutorial for teen coders
+✅ **Age-Appropriate Content** - Fixed duplicate videos and ensured content matches age groups (6-11 vs 12-17)
+✅ **Video Content Optimization** - Shortened prompt engineering video to under 2 minutes for better engagement
+✅ **Authentication Migration Complete** - Migrated from Firebase to Neon PostgreSQL database with bcrypt password hashing and JWT sessions
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
@@ -37,9 +49,10 @@ Preferred communication style: Simple, everyday language.
 - Local state management using React hooks for component-specific state
 
 ### Authentication & User Management
-- **Firebase Authentication** for user sign-up, sign-in, and session management
-- **Firestore** for user profile storage and role-based data
-- Multi-role support with different user types (student, teacher, parent)
+- **Neon PostgreSQL Database** with bcrypt password hashing for secure authentication
+- **JWT Session Management** with httpOnly cookies for security
+- **Express.js API Routes** for signup, signin, signout, and user management
+- Multi-role support with different user types (student, teacher, parent, school_admin)
 - Age-group specific features and content delivery
 
 ### Backend Architecture
