@@ -58,9 +58,9 @@ export function CourseExplanationModal({ isOpen, onClose, ageGroup, onGetStarted
         description: "Discover how to program the micro:bit device"
       },
       {
-        title: "Fun Robotics & Animation for Kids",
-        url: "https://www.youtube.com/embed/Q2dwOxkjk2s", // Kid-friendly robotics and animation
-        description: "Discover how to make fun animations and control robots with simple blocks"
+        title: "Scratch Animation Tutorial for Kids",
+        url: "https://www.youtube.com/embed/kUDSrooBGqU", // Scratch tutorial for kids
+        description: "Learn to create fun animations with moving characters and colorful backgrounds"
       }
     ]
   } : {
@@ -108,9 +108,9 @@ export function CourseExplanationModal({ isOpen, onClose, ageGroup, onGetStarted
         description: "How to use the coding environment and write Python code"
       },
       {
-        title: "AI Prompt Engineering in 2 Minutes",
-        url: "https://www.youtube.com/embed/_VjQlb8GvhY", // Short prompt engineering tutorial
-        description: "Quick guide to writing effective prompts for AI tools like ChatGPT and Claude"
+        title: "What is AI Prompt Engineering?",
+        url: "https://www.youtube.com/embed/dOxUroR57xs", // Beginner prompt engineering explanation
+        description: "Learn what prompt engineering is and how it helps young developers work with AI tools"
       },
       {
         title: "Building Your First Web Project",
