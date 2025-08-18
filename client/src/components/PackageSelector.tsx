@@ -29,10 +29,14 @@ export function PackageSelector({ packageType, selectedPackageId, onPackageSelec
         const response = await fetch('/api/packages');
         if (response.ok) {
           const allPackages = await response.json();
+          console.log('Fetched packages:', allPackages);
           const filteredPackages = allPackages.filter((pkg: Package) => 
             pkg.packageType === packageType && pkg.isActive
           );
+          console.log('Filtered packages for', packageType, ':', filteredPackages);
           setPackages(filteredPackages);
+        } else {
+          console.error('Failed to fetch packages:', response.status, response.statusText);
         }
       } catch (error) {
         console.error('Error fetching packages:', error);
@@ -49,7 +53,14 @@ export function PackageSelector({ packageType, selectedPackageId, onPackageSelec
   }
 
   if (packages.length === 0) {
-    return <div className="text-center py-4">No packages available</div>;
+    return (
+      <div className="text-center py-4">
+        <p>No packages available for {packageType} users</p>
+        <p className="text-sm text-gray-500 mt-2">
+          Expected package type: {packageType}
+        </p>
+      </div>
+    );
   }
 
   return (
