@@ -150,9 +150,9 @@ export function AuthModal({ isOpen, mode: initialMode, initialRole, initialAgeGr
               {(formData.role === 'student' || formData.role === 'school_admin') && (
                 <div className="mb-6">
                   <PackageSelector
-                    selectedPackage={formData.packageId}
+                    packageType={formData.role === 'school_admin' ? 'school' : 'individual'}
+                    selectedPackageId={formData.packageId}
                     onPackageSelect={(packageId) => setFormData({...formData, packageId})}
-                    userRole={formData.role}
                   />
                 </div>
               )}
