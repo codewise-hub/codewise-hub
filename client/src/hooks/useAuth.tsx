@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { User } from "@/lib/auth";
+import type { User } from "@shared/schema";
 import * as authApi from "@/lib/auth";
 
 interface AuthContextType {
