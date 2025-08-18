@@ -47,16 +47,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     try {
-      // For demo purposes, simulate sign in
-      const mockUser: AuthUser = {
-        id: "demo-user-id",
-        email,
-        name: "Demo User", 
-        role: "student",
-        ageGroup: "6-11",
-        firebaseUid: "demo-firebase-uid",
-      };
-      setUser(mockUser);
+      // Import Firebase sign-in
+      const { signInWithEmailAndPassword: firebaseSignIn } = await import('../lib/firebase');
+      await firebaseSignIn(auth, email, password);
+      // The auth state change will handle setting the user
     } catch (error) {
       console.error("Error signing in:", error);
       throw error;
@@ -65,16 +59,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithGoogle = async () => {
     try {
-      // For demo, create a mock Google user
-      const mockUser: AuthUser = {
-        id: "google-demo-user-id",
-        email: "demo@gmail.com",
-        name: "Google Demo User",
-        role: "student", 
-        ageGroup: "6-11",
-        firebaseUid: "google-demo-firebase-uid",
-      };
-      setUser(mockUser);
+      // Import Google sign-in from Firebase
+      const { signInWithGoogle: firebaseGoogleSignIn, createUserProfile } = await import('../lib/firebase');
+      const result = await firebaseGoogleSignIn();
+      
+      if (result.user) {
+        // Create or get user profile
+        await createUserProfile(result.user, {
+          role: 'student',
+          ageGroup: '6-11'
+        });
+        
+        // The auth state change will handle setting the user
+      }
     } catch (error) {
       console.error("Error signing in with Google:", error);
       throw error;
@@ -90,22 +87,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     childName?: string,
     schoolName?: string
   ) => {
-    // For demo purposes, simulate sign up
-    const mockUser: AuthUser = {
-      id: "demo-user-id",
-      email,
-      name,
-      role,
-      ageGroup,
-      childName,
-      schoolName,
-      firebaseUid: "demo-firebase-uid",
-    };
-    setUser(mockUser);
+    try {
+      // Import Firebase sign-up
+      const { createUserWithEmailAndPassword: firebaseSignUp, createUserProfile } = await import('../lib/firebase');
+      const result = await firebaseSignUp(auth, email, password);
+      
+      if (result.user) {
+        // Create user profile in Firestore
+        await createUserProfile(result.user, {
+          name,
+          role,
+          ageGroup,
+          childName,
+          schoolName
+        });
+        
+        // The auth state change will handle setting the user
+      }
+    } catch (error) {
+      console.error("Error signing up:", error);
+      throw error;
+    }
   };
 
   const signOut = async () => {
-    setUser(null);
+    try {
+      await firebaseSignOut(auth);
+      setUser(null);
+    } catch (error) {
+      console.error("Error signing out:", error);
+      throw error;
+    }
   };
 
   return (

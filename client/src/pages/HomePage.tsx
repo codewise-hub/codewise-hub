@@ -1,8 +1,14 @@
+import { useState } from 'react';
+import { CourseExplanationModal } from '@/components/CourseExplanationModal';
+import type { AgeGroup } from '@/types/user';
+
 interface HomePageProps {
   onAuthModalOpen: (mode: 'signin' | 'signup', role?: string, ageGroup?: string) => void;
 }
 
 export function HomePage({ onAuthModalOpen }: HomePageProps) {
+  const [showCourseExplanation, setShowCourseExplanation] = useState(false);
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<AgeGroup>('6-11');
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });
@@ -70,12 +76,25 @@ export function HomePage({ onAuthModalOpen }: HomePageProps) {
                   <i className="fa-solid fa-gamepad mr-2"></i>Game Creation
                 </div>
               </div>
-              <button 
-                onClick={() => onAuthModalOpen('signup', 'student', '6-11')} 
-                className="bg-white text-purple-800 px-6 py-3 rounded-full font-bold hover:bg-gray-100 transition"
-              >
-                Start Adventure
-              </button>
+              <div className="flex flex-col gap-3">
+                <button 
+                  onClick={() => {
+                    setSelectedAgeGroup('6-11');
+                    setShowCourseExplanation(true);
+                  }}
+                  className="bg-purple-200 text-purple-800 px-4 py-2 rounded-lg font-medium hover:bg-purple-300 transition"
+                  data-testid="button-little-coder-info"
+                >
+                  <i className="fa-solid fa-info-circle mr-2"></i>Learn More About Courses
+                </button>
+                <button 
+                  onClick={() => onAuthModalOpen('signup', 'student', '6-11')} 
+                  className="bg-white text-purple-800 px-6 py-3 rounded-full font-bold hover:bg-gray-100 transition"
+                  data-testid="button-signup-little-coder"
+                >
+                  Start Adventure
+                </button>
+              </div>
             </div>
 
             {/* Teen Coders (12-17) */}
@@ -97,12 +116,25 @@ export function HomePage({ onAuthModalOpen }: HomePageProps) {
                   <i className="fa-solid fa-brain mr-2"></i>AI & Machine Learning
                 </div>
               </div>
-              <button 
-                onClick={() => onAuthModalOpen('signup', 'student', '12-17')} 
-                className="bg-white text-blue-800 px-6 py-3 rounded-full font-bold hover:bg-gray-100 transition"
-              >
-                Start Coding
-              </button>
+              <div className="flex flex-col gap-3">
+                <button 
+                  onClick={() => {
+                    setSelectedAgeGroup('12-17');
+                    setShowCourseExplanation(true);
+                  }}
+                  className="bg-blue-200 text-blue-800 px-4 py-2 rounded-lg font-medium hover:bg-blue-300 transition"
+                  data-testid="button-teen-coder-info"
+                >
+                  <i className="fa-solid fa-info-circle mr-2"></i>Learn More About Courses
+                </button>
+                <button 
+                  onClick={() => onAuthModalOpen('signup', 'student', '12-17')} 
+                  className="bg-white text-blue-800 px-6 py-3 rounded-full font-bold hover:bg-gray-100 transition"
+                  data-testid="button-signup-teen-coder"
+                >
+                  Start Coding
+                </button>
+              </div>
             </div>
           </div>
 
@@ -308,6 +340,14 @@ export function HomePage({ onAuthModalOpen }: HomePageProps) {
           </div>
         </div>
       </footer>
+
+      {/* Course Explanation Modal */}
+      <CourseExplanationModal
+        isOpen={showCourseExplanation}
+        onClose={() => setShowCourseExplanation(false)}
+        ageGroup={selectedAgeGroup}
+        onGetStarted={() => onAuthModalOpen('signup', 'student', selectedAgeGroup)}
+      />
     </div>
   );
 }
