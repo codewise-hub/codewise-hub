@@ -38,7 +38,7 @@ export interface IEnhancedStorage {
   // Package operations
   getPackages(packageType?: string): Promise<Package[]>;
   getPackageById(id: string): Promise<Package | undefined>;
-  createPackage(package: InsertPackage): Promise<Package>;
+  createPackage(packageData: InsertPackage): Promise<Package>;
 
   // School operations
   createSchool(school: InsertSchool): Promise<School>;
@@ -215,8 +215,11 @@ export class EnhancedDatabaseStorage implements IEnhancedStorage {
     
     // For school-specific courses, filter by teacher's school
     if (schoolId) {
-      query = query.leftJoin(users, eq(courses.teacherId, users.id))
-        .where(eq(users.schoolId, schoolId)) as any;
+      const schoolCourses = await db.select()
+        .from(courses)
+        .leftJoin(users, eq(courses.teacherId, users.id))
+        .where(eq(users.schoolId, schoolId));
+      return schoolCourses.map(row => row.courses);
     }
     
     return await query;
