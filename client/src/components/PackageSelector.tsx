@@ -29,11 +29,15 @@ export function PackageSelector({ packageType, selectedPackageId, onPackageSelec
         const response = await fetch('/api/packages');
         if (response.ok) {
           const allPackages = await response.json();
-          console.log('Fetched packages:', allPackages);
-          const filteredPackages = allPackages.filter((pkg: Package) => 
-            pkg.packageType === packageType && pkg.isActive
-          );
-          console.log('Filtered packages for', packageType, ':', filteredPackages);
+          console.log('Raw fetched packages:', allPackages);
+          console.log('Looking for packageType:', packageType);
+          console.log('Available packageTypes:', allPackages.map((p: any) => p.packageType));
+          
+          const filteredPackages = allPackages.filter((pkg: Package) => {
+            console.log(`Package ${pkg.name}: type=${pkg.packageType}, active=${pkg.isActive}, matches=${pkg.packageType === packageType}`);
+            return pkg.packageType === packageType && pkg.isActive;
+          });
+          console.log('Final filtered packages for', packageType, ':', filteredPackages);
           setPackages(filteredPackages);
         } else {
           console.error('Failed to fetch packages:', response.status, response.statusText);
@@ -59,6 +63,14 @@ export function PackageSelector({ packageType, selectedPackageId, onPackageSelec
         <p className="text-sm text-gray-500 mt-2">
           Expected package type: {packageType}
         </p>
+        <details className="mt-2">
+          <summary className="text-xs text-blue-500 cursor-pointer">Debug Info</summary>
+          <div className="text-xs text-left mt-2">
+            <div>Fetch URL: /api/packages</div>
+            <div>Package Type Filter: {packageType}</div>
+            <div>Loading: {loading.toString()}</div>
+          </div>
+        </details>
       </div>
     );
   }
@@ -71,7 +83,22 @@ export function PackageSelector({ packageType, selectedPackageId, onPackageSelec
       
       <div className="grid gap-4">
         {packages.map((pkg) => {
-          const features = pkg.features ? pkg.features.split(',').map(f => f.trim()) : [];
+          console.log('Rendering package:', pkg.name, 'features:', pkg.features);
+          let features: string[] = [];
+          try {
+            if (pkg.features) {
+              // Check if it's JSON array
+              if (pkg.features.startsWith('[')) {
+                features = JSON.parse(pkg.features);
+              } else {
+                // Fallback to comma-split
+                features = pkg.features.split(',').map(f => f.trim());
+              }
+            }
+          } catch (e) {
+            console.error('Error parsing features for', pkg.name, ':', e);
+            features = [];
+          }
           
           return (
             <div
@@ -108,7 +135,7 @@ export function PackageSelector({ packageType, selectedPackageId, onPackageSelec
               
               {features.length > 0 && (
                 <ul className="text-sm space-y-1">
-                  {features.map((feature, index) => (
+                  {features.map((feature: string, index: number) => (
                     <li key={index} className="flex items-center">
                       <span className="text-green-500 mr-2">✓</span>
                       {feature}
