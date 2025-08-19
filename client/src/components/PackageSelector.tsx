@@ -26,24 +26,109 @@ export function PackageSelector({ packageType, selectedPackageId, onPackageSelec
   useEffect(() => {
     const fetchPackages = async () => {
       try {
-        const response = await fetch('/api/packages');
-        if (response.ok) {
-          const allPackages = await response.json();
-          console.log('Raw fetched packages:', allPackages);
-          console.log('Looking for packageType:', packageType);
-          console.log('Available packageTypes:', allPackages.map((p: any) => p.packageType));
-          
-          const filteredPackages = allPackages.filter((pkg: Package) => {
-            console.log(`Package ${pkg.name}: type=${pkg.packageType}, active=${pkg.isActive}, matches=${pkg.packageType === packageType}`);
-            return pkg.packageType === packageType && pkg.isActive;
-          });
-          console.log('Final filtered packages for', packageType, ':', filteredPackages);
-          setPackages(filteredPackages);
-        } else {
-          console.error('Failed to fetch packages:', response.status, response.statusText);
+        // Try multiple API paths for Vercel compatibility
+        const possiblePaths = ['/api/packages', './api/packages', window.location.origin + '/api/packages'];
+        let response;
+        let allPackages = [];
+        
+        for (const path of possiblePaths) {
+          try {
+            console.log('Trying to fetch from:', path);
+            response = await fetch(path, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
+            
+            if (response.ok) {
+              allPackages = await response.json();
+              console.log('Successfully fetched from:', path, 'Packages:', allPackages);
+              break;
+            } else {
+              console.log('Failed to fetch from:', path, 'Status:', response.status);
+            }
+          } catch (err) {
+            console.log('Error with path:', path, err);
+            continue;
+          }
         }
+
+        if (allPackages.length === 0) {
+          // Fallback: Use hardcoded packages with correct ZAR pricing
+          console.log('Using fallback packages for packageType:', packageType);
+          allPackages = packageType === 'school' ? [
+            {
+              id: 'school-basic',
+              name: 'School Basic',
+              description: 'Essential package for small schools and classrooms',
+              price: '6999.00',
+              currency: 'ZAR',
+              duration: 'monthly',
+              features: '["Up to 30 Students", "Teacher Dashboard", "Classroom Management", "Assignment Tools", "Progress Analytics", "Email Support"]',
+              packageType: 'school',
+              isActive: true
+            },
+            {
+              id: 'school-premium',
+              name: 'School Premium',
+              description: 'Complete solution for larger schools with advanced features',
+              price: '17499.00',
+              currency: 'ZAR',
+              duration: 'monthly',
+              features: '["Up to 100 Students", "Advanced Analytics", "Custom Curriculum", "Teacher Training", "Priority Support", "Custom Branding"]',
+              packageType: 'school',
+              isActive: true
+            }
+          ] : [
+            {
+              id: 'basic-explorer',
+              name: 'Basic Explorer',
+              description: 'Perfect for young coders starting their journey',
+              price: '349.00',
+              currency: 'ZAR',
+              duration: 'monthly',
+              features: '["Visual Block Programming", "Basic Coding Concepts", "5 Interactive Projects", "Progress Tracking", "Email Support"]',
+              packageType: 'individual',
+              isActive: true
+            },
+            {
+              id: 'pro-coder',
+              name: 'Pro Coder',
+              description: 'Advanced learning path with text-based programming',
+              price: '699.00',
+              currency: 'ZAR',
+              duration: 'monthly',
+              features: '["Text-Based Programming", "Advanced Projects", "AI/Prompt Engineering", "Unlimited Projects", "Priority Support", "Certificate Program"]',
+              packageType: 'individual',
+              isActive: true
+            },
+            {
+              id: 'family-plan',
+              name: 'Family Plan',
+              description: 'Multiple children learning together with parental oversight',
+              price: '999.00',
+              currency: 'ZAR',
+              duration: 'monthly',
+              features: '["Up to 4 Children", "All Features Included", "Parent Dashboard", "Progress Reports", "Family Projects", "Priority Support"]',
+              packageType: 'individual',
+              isActive: true
+            }
+          ];
+        }
+
+        console.log('Raw fetched packages:', allPackages);
+        console.log('Looking for packageType:', packageType);
+        
+        const filteredPackages = allPackages.filter((pkg: Package) => {
+          console.log(`Package ${pkg.name}: type=${pkg.packageType}, active=${pkg.isActive}, matches=${pkg.packageType === packageType}`);
+          return pkg.packageType === packageType && pkg.isActive;
+        });
+        console.log('Final filtered packages for', packageType, ':', filteredPackages);
+        setPackages(filteredPackages);
       } catch (error) {
         console.error('Error fetching packages:', error);
+        setPackages([]); // Ensure we don't get stuck in loading state
       } finally {
         setLoading(false);
       }
