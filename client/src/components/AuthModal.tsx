@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { PackageSelector } from "@/components/PackageSelector";
+import { SimplePackageSelector } from "@/components/SimplePackageSelector";
 
 
 interface AuthModalProps {
@@ -152,7 +152,7 @@ export function AuthModal({ isOpen, mode: initialMode, initialRole, initialAgeGr
                   <p className="text-sm text-gray-600 mb-2">
                     Role: {formData.role} → Package type: {formData.role === 'school_admin' ? 'school' : 'individual'}
                   </p>
-                  <PackageSelector
+                  <SimplePackageSelector
                     packageType={formData.role === 'school_admin' ? 'school' : 'individual'}
                     selectedPackageId={formData.packageId}
                     onPackageSelect={(packageId) => setFormData({...formData, packageId})}
