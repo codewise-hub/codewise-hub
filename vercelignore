@@ -1,0 +1,9 @@
+server/
+api/
+*.ts
+!client/
+drizzle.config.ts
+tsconfig.json
+README.md
+*.md
+node_modules/
